@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <h1>Fantasctic Blog</h1>
-    <BlogPost v-for="blogpost in blogposts" :post="blogpost" :key="blogpost.title" />
+    <button @click="toggleHighlightedPostsVisibility">{{ showHighlighted ? 'Hide' : 'Show' }} highlighted posts</button>
+    <BlogPost v-for="blogpost in visibleBlogPosts" :post="blogpost" :key="blogpost.title" />
   </div>
 </template>
 
@@ -15,6 +16,8 @@ import BlogPost, { Post } from "./components/BlogPost.vue";
   }
 })
 export default class App extends Vue {
+  public showHighlighted: boolean = true;
+
   private blogposts: Post[] = [
     {
       title: "My first blogpost ever!",
@@ -36,7 +39,16 @@ export default class App extends Vue {
       datePosted: new Date(2019, 1, 20)
     }
   ];
+
+  get visibleBlogPosts() {
+    return this.blogposts.filter((post: Post) => post.highlighted === undefined || post.highlighted === this.showHighlighted);
+  }
+
+  public toggleHighlightedPostsVisibility() {
+    this.showHighlighted = !this.showHighlighted;
+  }
 }
+
 </script>
 
 <style lang="scss">
